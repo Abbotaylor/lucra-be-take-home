@@ -1,27 +1,29 @@
 import 'reflect-metadata';
 import { join } from 'node:path';
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { GamesController } from './games.controller';
-import { GamesService } from './games.service';
-import { Game, GameCell } from './entities';
+
+import { Game, GameCell } from './games/entities';
+import { GamesModule } from './games/games.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: '0.0.0.0',
-      port: 5432,
-      username: 'local',
-      password: 'local',
-      database: 'local',
-      entities: [join(__dirname, 'entities/*')],
+      host: process.env.POSTGRES_HOST,
+      port: +process.env.POSTGRES_PORT,
+      username: process.env.POSTGRES_USERNAME,
+      password: process.env.POSTGRES_PASSWORD,
+      database: process.env.POSTGRES_DBNAME,
+      entities: [join(__dirname, './games/entities/*')],
       synchronize: true,
     }),
     TypeOrmModule.forFeature([Game, GameCell]),
+    GamesModule,
   ],
-  controllers: [GamesController],
-  providers: [GamesService],
+  controllers: [],
+  providers: [],
 })
-
 export class AppModule {}
