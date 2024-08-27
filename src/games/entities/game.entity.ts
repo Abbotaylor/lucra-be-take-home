@@ -23,9 +23,10 @@ export class Game {
   @OneToMany(() => GameCell, (cell) => cell.game)
   cells: GameCell[];
 
-  @Column()
+  @Column({ nullable: false })
   rows: number;
 
+  @Column({ nullable: false })
   @Column()
   columns: number;
 }
